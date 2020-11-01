@@ -1,0 +1,25 @@
+{
+  "name": "caps",
+  "version": "1.0.0",
+  "description": "",
+  "main": "caps.js",
+  "scripts": {
+    "test": "jest --verbose --coverage",
+    "lint": "eslint '**/*.js'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/401-advanced-javascript-aya/caps.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/401-advanced-javascript-aya/caps/issues"
+  },
+  "homepage": "https://github.com/401-advanced-javascript-aya/caps#readme",
+  "dependencies": {
+    "faker": "^5.1.0",
+    "jest": "^26.6.1"
+  }
+}
