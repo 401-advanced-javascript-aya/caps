@@ -3,27 +3,29 @@
 // send fake order each five seconds
 // we put our emmits inside the time interval (repeat itself each five seconds)
 
-const events = require('./events');
+'use strict';
 const faker = require('faker');
-require('./caps');
+require('dotenv').config();
+const net = require('net');
+const client = new net.Socket();
+const HOST = process.env.HOST || 'localhost';
+const PORT = process.env.PORT || 3000;
+const storeName = process.env.STORE_NAME || 'test';
 
-function createOrder() {
-  // console.log('lllllllllllllllllllllllllllllllllllllllllllll');
-  setInterval(() => {
-    let order = {
-      storeName: faker.company.companyName(),
-      orderId: faker.random.number(),
-      customerName: faker.name.findName(),
-      address: faker.address.streetAddress(),
-    };
-    // console.log('mmmmmmmmmmmmmmmmmmmmmmmm',order);
-    events.emit('pickUp', order);
+client.connect(PORT, HOST, () => {
+  console.log('Vendor Connected');
+  setInterval(function () {
+    let message = JSON.stringify({ event: 'pickup', payload: { storeName, orderID: faker.random.uuid(), customer: faker.name.findName(), address: faker.address.streetAddress() } });
+    client.write(message);
   }, 5000);
-}
-createOrder();
 
-function thanksFuc() {
-  console.log('Thank you!');
-}
+  client.on('data', (bufferData) => {
+    const dataObj = JSON.parse(bufferData);
+    if (dataObj.event === 'delivered') {
+      console.log(`Thanks you for delivering ${dataObj.payload.orderID}`);
+    }
+  });
 
-events.on('delivered', (payload) => thanksFuc(payload));
+  client.on('close', () => console.log('Connection closed!'));
+  client.on('error', (err) => console.log('Logger Error', err.message));
+});
